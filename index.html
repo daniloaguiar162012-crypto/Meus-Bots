@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gui Mrs Bots</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #111118;
+      --bg3: #16161f;
+      --border: rgba(255,255,255,0.07);
+      --text: #f0f0f5;
+      --muted: #6b6b80;
+      --accent: #5865F2;
+      --accent2: #7289da;
+      --accent-glow: rgba(88,101,242,0.3);
+      --green: #57F287;
+      --yellow: #FEE75C;
+      --red: #ED4245;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      overflow-x: hidden;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 60px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: -0.5px;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 20px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px; left: 50%;
+      transform: translateX(-50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(88,101,242,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(88,101,242,0.1);
+      border: 1px solid rgba(88,101,242,0.3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.8rem;
+      color: var(--accent2);
+      margin-bottom: 32px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: clamp(2.5rem, 7vw, 5.5rem);
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+
+    .hero h1 span {
+      background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.7;
+      margin-bottom: 48px;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 16px;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      padding: 14px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      box-shadow: 0 0 30px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent2);
+      transform: translateY(-2px);
+      box-shadow: 0 0 40px var(--accent-glow);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text);
+      padding: 14px 32px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+      transform: translateY(-2px);
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      padding: 60px 20px;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg2);
+      animation: fadeUp 0.6s 0.4s ease both;
+    }
+
+    .stat { text-align: center; }
+
+    .stat-num {
+      font-family: 'Syne', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* ── SECTION ── */
+    section {
+      padding: 100px 60px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .section-desc {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.7;
+      max-width: 500px;
+      margin-bottom: 60px;
+    }
+
+    /* ── BOTS GRID ── */
+    .bots-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+
+    .bot-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bot-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), #a78bfa);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .bot-card:hover {
+      border-color: rgba(88,101,242,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+    }
+
+    .bot-card:hover::before { opacity: 1; }
+
+    .bot-icon {
+      width: 56px; height: 56px;
+      background: rgba(88,101,242,0.15);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    .bot-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .bot-desc {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .bot-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 28px;
+    }
+
+    .tag {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+
+    .invite-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--accent);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .invite-btn:hover {
+      background: var(--accent2);
+      transform: translateY(-1px);
+    }
+
+    /* ── COMANDOS ── */
+    .commands-section {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 100px 0;
+    }
+
+    .commands-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 60px;
+    }
+
+    .bot-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: 'Inter', sans-serif;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .commands-panel { display: none; }
+    .commands-panel.active { display: block; }
+
+    .commands-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .command-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .command-card:hover {
+      border-color: rgba(88,101,242,0.3);
+      transform: translateY(-2px);
+    }
+
+    .command-card.copied {
+      border-color: var(--green);
+    }
+
+    .copy-hint {
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-top: 10px;
+      opacity: 0.6;
+    }
+
+    .command-card.copied .copy-hint {
+      color: var(--green);
+      opacity: 1;
+    }
+
+    .command-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--accent2);
+      margin-bottom: 6px;
+      cursor: pointer;
+      display: inline-block;
+      padding: 4px 10px;
+      background: rgba(88,101,242,0.1);
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .command-name:hover {
+      background: rgba(88,101,242,0.25);
+      color: white;
+    }
+
+    .command-name.copied {
+      background: rgba(87,242,135,0.15);
+      color: var(--green);
+    }
+
+    .command-name code {
+      background: rgba(88,101,242,0.1);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .command-desc {
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+
+    .footer-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--text);
+    }
+
+    .footer-logo span { color: var(--accent); }
+
+    .footer-text {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { display: none; }
+      section { padding: 60px 24px; }
+      .commands-inner { padding: 0 24px; }
+      footer { padding: 40px 24px; flex-direction: column; text-align: center; }
+      .stats { gap: 30px; flex-wrap: wrap; }
+      .hero-btns { flex-direction: column; align-items: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">Gui Mrs <span>Bots</span></a>
+  <ul class="nav-links">
+    <li><a href="#bots">Bots</a></li>
+    <li><a href="#comandos">Comandos</a></li>
+    <li><a href="https://discord.gg/seuservidor" target="_blank">Suporte</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">3 Bots Disponíveis</div>
+  <h1>Bots feitos para<br><span>seu servidor</span></h1>
+  <p>Sorteios, tickets e boas-vindas personalizadas. Tudo que o seu servidor Discord precisa, em um só lugar.</p>
+  <div class="hero-btns">
+    <a href="#bots" class="btn-primary">Ver os Bots →</a>
+    <a href="#comandos" class="btn-secondary">Comandos</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">3</div>
+    <div class="stat-label">Bots Disponíveis</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">Gratuito</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">PT-BR</div>
+    <div class="stat-label">Totalmente em Português</div>
+  </div>
+</div>
+
+
+
+<!-- COMANDOS -->
+<div class="commands-section" id="comandos">
+  <div class="commands-inner">
+    <p class="section-label reveal">Comandos</p>
+    <h2 class="section-title reveal">Todos os comandos<br>disponíveis</h2>
+    <p class="section-desc reveal">Veja abaixo todos os comandos de cada bot. Todos usam Slash Commands (/).</p>
+
+    <div class="bot-tabs reveal">
+      <button class="tab-btn active" onclick="showTab('sorteio')">🎉 Sorteio</button>
+      <button class="tab-btn" onclick="showTab('ticket')">🎫 Ticket</button>
+      <button class="tab-btn" onclick="showTab('entrada')">👋 Boas-Vindas</button>
+    </div>
+
+    <!-- Sorteio -->
+    <div class="commands-panel active" id="tab-sorteio">
+      <div class="commands-grid">
+        <div class="command-card">
+          <div class="command-name" onclick="copyCmd('/sorteio criar', this)">/sorteio criar</div>
+          <div class="command-desc">Cria um novo sorteio. Defina a duração (ex: 10s, 5m, 2h, 1d), número de ganhadores, prêmio e canal.</div>
+          <div class="copy-hint">Clique no comando para copiar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ticket -->
+    <div class="commands-panel" id="tab-ticket">
+      <div class="commands-grid">
+        <div class="command-card">
+          <div class="command-name" onclick="copyCmd('/ticket criar', this)">/ticket criar</div>
+          <div class="command-desc">Abre o painel de configuração do sistema de tickets. Configure canal, cargo da staff, mensagem e imagem.</div>
+          <div class="copy-hint">Clique no comando para copiar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entrada -->
+    <div class="commands-panel" id="tab-entrada">
+      <div class="commands-grid">
+        <div class="command-card">
+          <div class="command-name" onclick="copyCmd('/configurar_entrada', this)">/configurar_entrada</div>
+          <div class="command-desc">Abre o painel de configuração das boas-vindas. Configure canal, mensagem e imagem de fundo.</div>
+          <div class="copy-hint">Clique no comando para copiar</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Gui Mrs <span>Bots</span></div>
+  <div class="footer-text">© 2026 Gui Mrs Bots</div>
+</footer>
+
+<script>
+  // Copiar comando
+  function copyCmd(cmd, el) {
+    navigator.clipboard.writeText(cmd).then(() => {
+      el.classList.add('copied');
+      const hint = el.closest('.command-card').querySelector('.copy-hint');
+      hint.textContent = '✅ Copiado!';
+      hint.style.color = 'var(--green)';
+      setTimeout(() => {
+        el.classList.remove('copied');
+        hint.textContent = 'Clique no comando para copiar';
+        hint.style.color = '';
+      }, 2000);
+    });
+  }
+
+  // Tabs
+  function showTab(tab) {
+    document.querySelectorAll('.commands-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // Reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 100);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
